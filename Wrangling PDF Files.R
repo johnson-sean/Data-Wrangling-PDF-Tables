@@ -5,6 +5,7 @@ library(pdftools)
 library(dplyr)
 library(tidyr)
 library(tibble)
+library(Thematic)
 
 # user selected values ----
 pages <- as.character(c(1:20))
@@ -81,9 +82,16 @@ pdf<-df%>%
              str_detect(string = Field, pattern = "Calendar")))%>%
   pivot_longer(!c("Table","SubTable","Field","Period","Values"),
                names_to = "Year",values_to = "Value")%>%
+  rename(Unit = Values)%>%
   select(Table,
          SubTable,
          Field,
          Value,
+         Unit,
          Year,
          Period)
+
+pdf%>%
+  filter(Table == "U.S. government outlays",
+         Field == "Total CCC programs")%>%
+  Thematic::tabGT()
